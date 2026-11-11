@@ -1,0 +1,811 @@
+\documentclass[reprint, amsmath, amssymb, aps, prl]{revtex4-2}
+
+\usepackage{graphicx} % Include figure files
+\usepackage{dcolumn}  % Align table columns on decimal point
+\usepackage{bm}       % bold math
+\usepackage[hidelinks,hypertexnames=false]{hyperref}
+
+\newcommand{\Qdot}{\dot Q}
+\newcommand{\degC}{\ensuremath{\,^\circ\mathrm{C}}}
+\newcommand{\Biperp}{\mathrm{Bi}_\perp}
+\newcommand{\WmK}{\mathrm{W\,m^{-1}K^{-1}}}
+\newcommand{\WmmK}{\mathrm{W\,m^{-2}K^{-1}}}
+\urldef{\repourl}\url{https://github.com/tyin-source/__Lab_Module_7__}
+\urldef{\pathPone}\path{python/analysis/a4_problem_1_3.py}
+\newcommand{\commit}{94ede0416ea097463bf811f10fbb121f1848e46b}
+
+\begin{document}
+
+\preprint{Phys 39 Module 7 -- A4}
+
+\title{Finite-Rod Model and Validity Checks:\\ Fin Equation, Finite-Length Error, and Transverse Biot Number}
+
+\author{Tianren Yin}
+\affiliation{Physics Department, Brandeis University}
+
+\date{\today}
+
+\begin{abstract}
+This assignment builds the stationary finite-rod (fin) model used for the Module 7
+course rod and makes two provisional validity predictions before heating. Applied to
+Lienhard Problem~1.3, Fourier's law gives temperature drops from $0.1$~K to $2000$~K
+across a 1-cm slab at the same heat flux; the three low-conductivity cases are physically
+unreasonable. An energy balance on a rod slice gives the fin equation
+$d^2\theta/dx^2=m^2\theta$ with $m^2=hP/(kA)$, whose insulated-tip solution is
+$\cosh[m(L-x)]/\cosh mL$. For the 6061-T6 rod ($d=12.70$~mm, $L=26.90$~cm,
+$k=166$--$172~\WmK$) and the planning value $h=10~\WmmK$, $m=4.34~\mathrm{m^{-1}}$ and
+$mL=1.17$, so the semi-infinite profile $e^{-mx}$ is in error by 11--30\% at the three
+farthest planned sensors: the rod is not expected to be semi-infinite over the measured
+region. In contrast, $\Biperp=hd/(4k)=1.9\times10^{-4}\ll0.1$, so each cross section can
+be represented by one temperature.
+\\[4pt]
+Assignment A4 (individual). Repository: \repourl; Git commit \texttt{\commit}.
+\end{abstract}
+
+\maketitle
+
+Parts~3 and 4 are provisional predictions recorded before heating the rod. They use the
+measured rod geometry, the planned sensor positions, a literature range for $k$, and the
+planning value $h=10~\WmmK$ given in the Part~III handout~\cite{handout}. Equation numbers
+in parentheses such as (4.28) are those of Lienhard~\cite{Lienhard}.
+
+%======================================================================
+\section*{Part 1. Apply Fourier's law: Lienhard Problem 1.3}
+
+\subsection*{Problem statement}
+
+A flat slab of thickness $L=0.01$~m carries a steady heat flux $q=5000~\mathrm{W/m^2}$
+from its hot side to its cold side. The cold side is held at $T_c=-40\degC$. For each
+material in Table~\ref{tab:p13}, compute the temperature drop $\Delta T$ across the slab,
+find the hot-side temperature $T_h=T_c+\Delta T$, and state whether the case is
+physically reasonable and why.
+
+\subsection*{Derivation from Fourier's law}
+
+Start from the one-dimensional Fourier law,
+\begin{equation*}
+q_x=-k\frac{dT}{dx}.
+\end{equation*}
+Assumptions:
+\begin{enumerate}
+\item \textbf{Steady state}: no time dependence, $\partial T/\partial t=0$;
+\item \textbf{One-dimensional conduction}: $T=T(x)$ only;
+\item \textbf{Constant $k$}: thermal conductivity independent of temperature over the range;
+\item \textbf{No internal heat generation}.
+\end{enumerate}
+With no source and steady state, the energy balance on a slice gives
+\begin{equation*}
+\frac{dq_x}{dx}=0\quad\Longrightarrow\quad q_x=q=\text{constant}.
+\end{equation*}
+Then
+\begin{equation*}
+\frac{dT}{dx}=-\frac{q}{k}=\text{constant},
+\end{equation*}
+so the temperature profile is \textbf{linear in $x$}. This linearity is a \emph{result} of
+the steady, source-free, constant-$k$ assumptions, not an extra assumption. Integrating
+from $x=0$ (hot side) to $x=L$ (cold side),
+\begin{equation*}
+T(L)-T(0)=-\frac{qL}{k}.
+\end{equation*}
+Defining $\Delta T=T_h-T_c=T(0)-T(L)$,
+\begin{equation*}
+\boxed{\Delta T=\frac{qL}{k}}
+\qquad
+\boxed{T_h=T_c+\frac{qL}{k}}.
+\end{equation*}
+
+\subsection*{Unit check}
+
+\begin{equation*}
+\frac{\mathrm{W/m^2}\cdot\mathrm{m}}{\mathrm{W/(m\cdot K)}}
+=\frac{\mathrm{W/m}}{\mathrm{W/(m\cdot K)}}
+=\mathrm{K}.
+\end{equation*}
+A temperature difference in kelvin equals the same difference in $^\circ$C, so $T_h$ can
+be reported in $^\circ$C.
+
+\subsection*{Worked example: silver}
+
+For silver, $k=427~\WmK$. With $q=5000~\mathrm{W/m^2}$ and $L=0.01$~m,
+\begin{align*}
+\Delta T
+&=\frac{(5000~\mathrm{W/m^2})(0.01~\mathrm{m})}{427~\mathrm{W/(m\cdot K)}}
+=\frac{50}{427}~\mathrm{K}\\
+&\approx0.117~\mathrm{K}.
+\end{align*}
+Hence
+\begin{equation*}
+T_h=-40\degC+0.117~\mathrm{K}\approx-39.88\degC.
+\end{equation*}
+The hot side stays far below silver's melting point, and the temperature range is tiny,
+so constant-$k$, steady, one-dimensional conduction is an excellent approximation.
+
+\subsection*{Table calculation for all materials}
+
+For every material the same formula applies,
+\begin{equation*}
+\Delta T=\frac{qL}{k}=\frac{50}{k}~\mathrm{K},
+\qquad
+T_h=-40\degC+\Delta T,
+\end{equation*}
+with the results in Table~\ref{tab:p13}. The metals use the 20\degC\ column, as the
+book's silver answer does. With $k$ interpolated to $-40\degC$, silver gives 0.1165~K
+and aluminum 0.2097~K, a change below 1\%.
+
+\begin{table*}[t]
+\caption{\label{tab:p13}Lienhard Problem 1.3: $\Delta T=qL/k$ and $T_h$ for
+$q=5000~\mathrm{W/m^2}$, $L=0.01$~m, $T_c=-40\degC$. Conductivities from Lienhard
+Tables A.1 and A.2~\cite{Lienhard}; values from
+\pathPone.}
+\begin{ruledtabular}
+\begin{tabular}{lrlrrp{0.27\textwidth}}
+Material & $k$ (W/(m K)) & Source & $\Delta T$ (K) & $T_h$ ($^\circ$C) & Reasonable? \\
+\hline
+Pure silver (99.99+\%) & 427 & Table A.1, 20\degC & 0.117 & $-39.88$ & Yes: tiny $\Delta T$, far from any limit \\
+Pure aluminum & 237 & Table A.1, 20\degC & 0.211 & $-39.79$ & Yes: tiny $\Delta T$, far from any limit \\
+Mild steel (0.5\% carbon) & 54 & Table A.1, 20\degC & 0.926 & $-39.07$ & Yes: tiny $\Delta T$, far from any limit \\
+Ice & 2.215 & Table A.2, 0\degC & 22.6 & $-17.4$ & Yes: $T_h<0\degC$, ice stays solid \\
+Spruce & 0.11 & Table A.2, 20\degC & 455 & 415 & \textbf{No}: wood chars and ignites well below this \\
+Insulation (85\% magnesia, \emph{not} MgO) & 0.067 & Table A.2, 38\degC & 746 & 706 & \textbf{No}: far above its service limit \\
+Silica aerogel & 0.024 & Table A.2, 0\degC & 2083 & 2043 & \textbf{No}: above the $\mathrm{SiO_2}$ melting point \\
+\end{tabular}
+\end{ruledtabular}
+\end{table*}
+
+\subsection*{Which cases are unreasonable, and why}
+
+\paragraph*{(a) Compare $T_h$ with each material's physical or service limit.}
+\begin{itemize}
+\item \textbf{Ice:} $T_h\approx-17.4\degC$, still below the 0\degC\ melting point. Ice
+remains solid, which is consistent.
+\item \textbf{Spruce:} $T_h\approx415\degC$. Wood chars and ignites at roughly
+250--300\degC, so spruce cannot exist at this temperature. \textbf{Unreasonable.}
+\item \textbf{85\% magnesia:} $T_h\approx706\degC$. The $k=0.067~\WmK$ entry is
+\textbf{not} ``MgO''; Lienhard Table A.2 lists ``85\% magnesia'' separately from
+``Magnesium oxide, polycrystalline'' ($k=48~\WmK$). 85\% magnesia is a
+magnesium-carbonate-based pipe insulation with a documented service limit of
+\textbf{up to 315\degC}~\cite{magnesia}. The computed hot side is more than twice that
+limit, so this case is \textbf{unreasonable}.
+\item \textbf{Aerogel:} $T_h\approx2043\degC$. Silica aerogel is a porous
+$\mathrm{SiO_2}$ network. The melting point of $\mathrm{SiO_2}$ is about
+\textbf{1710\degC}~\cite{sio2mp}, with reported values of roughly
+\textbf{1600--1725\degC}~\cite{sio2range}. 2043\degC\ is above the melting point of the
+solid skeleton itself, which is a stronger objection than sintering.
+\textbf{Unreasonable.}
+\end{itemize}
+
+\paragraph*{(b) Is constant $k$ still credible when $\Delta T$ is hundreds or thousands of kelvin?}
+For the three metals and ice, $\Delta T$ is at most a few tens of kelvin, so constant $k$
+is fine. For spruce, 85\% magnesia, and aerogel, $\Delta T$ is several hundred to over two
+thousand kelvin. Over such ranges $k$ is not constant: it varies with temperature, and for
+porous insulators radiation across pores adds a strongly temperature-dependent
+contribution. The linear profile derived above no longer holds, so the computed $T_h$ is
+only a nominal estimate.
+
+The 85\% magnesia entry makes this concrete: Lienhard Table A.2 gives $k=0.067$ at
+38\degC\ and $k=0.08$ at 204\degC. Even within the material's rated range, $k$ rises by
+about 20\%. Extrapolating a single constant $k=0.067$ to 706\degC\ is therefore not
+defensible.
+
+\paragraph*{(c) Connection to TEC over-temperature protection.}
+A thermoelectric cooler uses the Peltier effect to \textbf{pump heat from the cold side to
+the hot side}. The element's low $k$ is actually helpful for the cooling function: it
+reduces heat conduction back from the hot side to the cold side. The over-temperature
+risk is \textbf{not} that the element's own $k$ is low; it lies on the
+\textbf{heat-rejection path} on the hot side.
+
+The hot side must reject both the pumped heat and the electrical power through the heat
+sink. If the thermal resistance of that path becomes large (a failed fan, poor thermal
+contact, a blocked heat sink), the hot-side temperature rise is
+\begin{equation*}
+\Delta T_{\text{hot side}}\approx\Qdot_{\text{reject}}\,R_{\text{path}}.
+\end{equation*}
+This has the \textbf{same form} as the slab result $\Delta T=qL/k$: a fixed heat flow
+through a large thermal resistance produces a large temperature rise. This is exactly why
+Module 4 includes a series thermal switch that opens around 70\degC: it interrupts the
+path before the hot side overheats. The slab calculation is a minimal illustration of the
+same warning: a large $\Delta T$ can appear when a fixed heat flux is forced through a
+high-thermal-resistance path.
+
+%======================================================================
+\section*{Part 2. Build the stationary finite-rod model}
+
+\subsection*{2.1 Stationary fin equation}
+
+\paragraph*{Assumptions.}
+\begin{enumerate}
+\item Steady state: $\partial T/\partial t=0$, so no slice stores energy.
+\item No internal heat generation in the rod.
+\item $k$, $A$, and $P$ are constant along the rod (a uniform cylinder).
+\item $h$ is uniform over the side surface and $T_\infty$ is constant. Radiation is
+neglected or linearized into $h$.
+\item Each cross section has a single temperature $T(x)$. This requires a small transverse
+Biot number, $\Biperp=h(A/P)/k\ll1$. For a circular rod,
+$A/P=(\pi d^2/4)/(\pi d)=d/4=r/2$, so $\Biperp=hr/(2k)\ll1$.
+\end{enumerate}
+
+\paragraph*{Energy balance.}
+Take a slice $[x,\ x+\delta x]$:
+\begin{itemize}
+\item heat conducted in through the left face (\textbf{Fourier's law}, $q=-k\,dT/dx$,
+over the area $A$): $-kA\,\dfrac{dT}{dx}\Big|_x$;
+\item heat conducted out through the right face (\textbf{Fourier's law}):
+$-kA\,\dfrac{dT}{dx}\Big|_{x+\delta x}$;
+\item heat lost from the side (\textbf{Newton's law of cooling}, $q=h(T-T_\infty)$, over
+the side area $P\,\delta x$): $hP\,\delta x\,(T-T_\infty)$.
+\end{itemize}
+\textbf{Conservation of energy} for the slice at steady state (no storage, no
+generation): setting in $-$ out $-$ side loss $=0$ gives
+\begin{multline}
+\left(-kA\frac{dT}{dx}\right)_x-\left(-kA\frac{dT}{dx}\right)_{x+\delta x}\\
+-hP\,\delta x\,(T-T_\infty)=0.
+\tag{4.28}
+\end{multline}
+Dividing by $\delta x$ and letting $\delta x\to0$,
+\begin{equation*}
+kA\,\frac{d^2T}{dx^2}=hP\,(T-T_\infty).
+\end{equation*}
+Because $T_\infty$ is constant, $d^2T/dx^2=d^2(T-T_\infty)/dx^2$. Therefore
+\begin{equation}
+\frac{d^2(T-T_\infty)}{dx^2}=m^2\,(T-T_\infty),\qquad m^2=\frac{hP}{kA}.
+\tag{4.30}
+\end{equation}
+For a circular rod, $m^2=4h/(kd)$.
+
+\paragraph*{Unit check.}
+Every term in (4.28) has units of W:
+\begin{itemize}
+\item conduction term: $kA\,dT/dx$ has units
+$[\WmK][\mathrm{m^2}][\mathrm{K\,m^{-1}}]=\mathrm{W}$;
+\item side-loss term: $hP\,\delta x\,(T-T_\infty)$ has units
+$[\WmmK][\mathrm{m}][\mathrm{m}][\mathrm{K}]=\mathrm{W}$.
+\end{itemize}
+Both sides of $kA\,d^2T/dx^2=hP\,(T-T_\infty)$ are heat flow per unit length,
+$\mathrm{W\,m^{-1}}$:
+\begin{itemize}
+\item left: $[\WmK][\mathrm{m^2}][\mathrm{K\,m^{-2}}]=\mathrm{W\,m^{-1}}$;
+\item right: $[\WmmK][\mathrm{m}][\mathrm{K}]=\mathrm{W\,m^{-1}}$.
+\end{itemize}
+Both sides of (4.30) have units of $\mathrm{K\,m^{-2}}$: the left side is
+$\mathrm{K\,m^{-2}}$, and on the right $m^2$ has units
+\begin{equation*}
+\frac{[\WmmK][\mathrm{m}]}{[\WmK][\mathrm{m^2}]}=\mathrm{m^{-2}},
+\end{equation*}
+which multiplied by K gives $\mathrm{K\,m^{-2}}$. $1/m$ has units of m and is the decay
+length. In an infinite rod, $T-T_\infty$ falls to $1/e$ of its value over each distance
+$1/m$.
+
+\subsection*{2.2 Boundary conditions and their physical meaning}
+
+A second-order equation needs two boundary conditions. The course rod uses a Dirichlet
+condition at the base and a Neumann condition at the tip.
+
+\paragraph*{Base (Dirichlet):} $T(0)=T_0$. Physically, this fixes the temperature at
+$x=0$ to a known value. On the course rod, $x=0$ is the first thermistor hole, and $T_0$
+is the temperature that thermistor measures. It is not the TEC setpoint, because the
+contact interface and a length of rod lie between the TEC and the first hole, so the two
+temperatures differ. Nor is $x=0$ the physical end of the rod. Choosing this interior
+plane as the analysis base is valid because the equation holds for any section of rod
+from that plane to the tip.
+
+\paragraph*{Tip (Neumann, adiabatic):} $dT/dx|_{x=L}=0$ (4.31b). Physically, no heat
+crosses the end face: $\Qdot(L)=-kA\,dT/dx|_L=0$. This is an approximation. The real end
+face also loses heat by convection, which is described by the Robin condition (4.31a),
+\begin{equation*}
+-kA\,\frac{dT}{dx}\Big|_{x=L}=h_LA\,[T(L)-T_\infty].
+\end{equation*}
+The approximation is reasonable because the ratio of end-face area to side area is
+\begin{equation*}
+\frac{\pi d^2/4}{\pi dL}=\frac{d}{4L}\ll1,
+\end{equation*}
+so the end face carries only a small fraction of the total heat loss. Part~3 quantifies
+the difference between the two solutions (Example 4.8 and Problem 4.20).
+
+\subsection*{2.3 Finite insulated-tip solution}
+
+\paragraph*{Nondimensionalization.}
+Let $\Theta=(T-T_\infty)/(T_0-T_\infty)$ and $\xi=x/L$. Then (4.30) becomes
+\begin{equation}
+\frac{d^2\Theta}{d\xi^2}=(mL)^2\,\Theta.
+\tag{4.34}
+\end{equation}
+The boundary conditions become $\Theta(0)=1$ and $d\Theta/d\xi|_{\xi=1}=0$. The general
+solution and its derivative are
+\begin{align*}
+\Theta&=C_1e^{mL\xi}+C_2e^{-mL\xi},\\
+\frac{d\Theta}{d\xi}&=mL\left(C_1e^{mL\xi}-C_2e^{-mL\xi}\right).
+\end{align*}
+
+\paragraph*{Solving for the constants.}
+The base condition gives
+\begin{equation}
+C_1+C_2=1.
+\tag{a}
+\end{equation}
+The tip condition gives
+\begin{equation}
+mL\left(C_1e^{mL}-C_2e^{-mL}\right)=0\ \Rightarrow\ C_2=C_1e^{2mL}.
+\tag{b}
+\end{equation}
+Substituting (b) into (a),
+\begin{align*}
+C_1\left(1+e^{2mL}\right)=1\ \Rightarrow\
+C_1&=\frac{1}{1+e^{2mL}}=\frac{e^{-mL}}{e^{-mL}+e^{mL}}\\
+&=\frac{e^{-mL}}{2\cosh mL}.
+\end{align*}
+Returning to (b),
+\begin{equation*}
+C_2=C_1e^{2mL}=\frac{e^{mL}}{2\cosh mL}.
+\end{equation*}
+
+\paragraph*{Combining into a hyperbolic cosine.}
+\begin{equation}
+\begin{split}
+\Theta&=\frac{e^{-mL}e^{mL\xi}+e^{mL}e^{-mL\xi}}{2\cosh mL}
+=\frac{e^{-mL(1-\xi)}+e^{mL(1-\xi)}}{2\cosh mL}\\
+&=\frac{\cosh\big[mL(1-\xi)\big]}{\cosh mL}.
+\end{split}
+\tag{4.41}
+\end{equation}
+In dimensional form,
+\begin{equation*}
+T(x)-T_\infty=(T_0-T_\infty)\,\frac{\cosh\big[m(L-x)\big]}{\cosh mL}.
+\end{equation*}
+
+\paragraph*{Verification.}
+\begin{itemize}
+\item Differential equation:
+$\dfrac{d^2\Theta}{d\xi^2}=(mL)^2\dfrac{\cosh[mL(1-\xi)]}{\cosh mL}=(mL)^2\Theta$ $\checkmark$
+\item Base condition: $\Theta(0)=\cosh mL/\cosh mL=1$ $\checkmark$
+\item Tip condition: $\dfrac{d\Theta}{d\xi}=-mL\,\dfrac{\sinh[mL(1-\xi)]}{\cosh mL}$, which
+at $\xi=1$ equals $-mL\,\sinh0/\cosh mL=0$ $\checkmark$
+\end{itemize}
+
+\paragraph*{Base heat rate and tip temperature.}
+The base heat rate is
+\begin{align*}
+\Qdot_0&=-kA\frac{dT}{dx}\Big|_0=-\frac{kA(T_0-T_\infty)}{L}\frac{d\Theta}{d\xi}\Big|_0\\
+&=kAm\,(T_0-T_\infty)\tanh mL\\
+&=\sqrt{hPkA}\,(T_0-T_\infty)\tanh mL.
+\end{align*}
+Unit check: $\sqrt{hPkA}$ has units
+\begin{equation*}
+\sqrt{[\WmmK][\mathrm{m}][\WmK][\mathrm{m^2}]}=\mathrm{W\,K^{-1}},
+\end{equation*}
+and multiplying by K gives W $\checkmark$. The tip temperature is
+\begin{equation*}
+\Theta(1)=\frac{1}{\cosh mL}.
+\end{equation*}
+
+%======================================================================
+\section*{Part 3. Provisional finite-length prediction}
+
+\subsection*{3.1 Problem 4.12: the semi-infinite limit}
+
+Problem 4.12 asks for Eq.~(4.50) from the general solution (4.35), using the boundary
+conditions $T(x=0)=T_0$ and $T(x=L)=T_\infty$. The far end is held at room temperature;
+it is not insulated. With $\theta=T-T_\infty$, these are $\theta(0)=\theta_0$ and
+$\theta(L)=0$, and the fin equation $\theta''=m^2\theta$ has the general solution
+\begin{equation*}
+\theta=C_1e^{mx}+C_2e^{-mx}.
+\end{equation*}
+The two conditions give $C_1+C_2=\theta_0$ and $C_1e^{mL}+C_2e^{-mL}=0$. The second gives
+$C_2=-C_1e^{2mL}$; substituting into the first,
+\begin{equation*}
+C_1=-\frac{\theta_0\,e^{-mL}}{2\sinh mL},
+\qquad
+C_2=\frac{\theta_0\,e^{mL}}{2\sinh mL},
+\end{equation*}
+so
+\begin{equation*}
+\frac{\theta(x)}{\theta_0}
+=\frac{e^{m(L-x)}-e^{-m(L-x)}}{2\sinh mL}
+=\frac{\sinh\big[m(L-x)\big]}{\sinh mL}.
+\end{equation*}
+This satisfies $\theta(0)/\theta_0=1$ and $\theta(L)=0$. For fixed $x$, write it as
+\begin{equation}
+\frac{\theta(x)}{\theta_0}
+=e^{-mx}\,\frac{1-e^{-2m(L-x)}}{1-e^{-2mL}}
+\ \xrightarrow{\ L\to\infty\ }\
+e^{-mx},
+\tag{4.50}
+\end{equation}
+the semi-infinite profile.
+
+\paragraph*{Physical meaning.}
+The far-end condition enters only through the factor $e^{-2m(L-x)}$, which decays
+exponentially with the distance from the far end measured in units of $1/m$. A few decay
+lengths away from the far end, the temperature no longer depends on what happens there:
+the insulated tip (Part~2, $\cosh[m(L-x)]/\cosh mL$) and the room-temperature tip
+($\sinh[m(L-x)]/\sinh mL$) both approach $e^{-mx}$. The far-end condition is effectively
+forgotten, which is why (4.50) is a limit of the finite solution rather than a new
+physical law.
+
+\subsection*{3.2 Example 4.8 and Problem 4.20: the tip-boundary approximation}
+
+For a convecting tip with coefficient $h_L$, the exact solution (Lienhard Eqs.~4.48 and
+4.49) is
+\begin{equation*}
+\Theta=\frac{\cosh\big[mL(1-\xi)\big]+\dfrac{\mathrm{Bi_{tip}}}{mL}\sinh\big[mL(1-\xi)\big]}
+{\cosh mL+\dfrac{\mathrm{Bi_{tip}}}{mL}\sinh mL},
+\end{equation*}
+\begin{equation*}
+\frac{\Qdot_0}{\sqrt{hPkA}\,(T_0-T_\infty)}
+=\frac{\tanh mL+h_L/(mk)}{1+\big(h_L/(mk)\big)\tanh mL},
+\end{equation*}
+with $\mathrm{Bi_{tip}}=h_LL/k$ (Lienhard's $\mathrm{Bi_{ax}}$) and
+$\mathrm{Bi_{tip}}/(mL)=h_L/(mk)$. Setting $h_L\to0$ recovers the insulated-tip results
+(4.41) and (4.44).
+
+\paragraph*{Example 4.8.}
+An aluminum rod with $d=2.0$~cm, $k=205~\WmK$, and $L=8.0$~cm protrudes from a 150\degC\
+wall into 26\degC\ air with $h=h_L=120~\WmmK$. Then $mL=0.8656$,
+$\mathrm{Bi_{ax}}=0.0468$, and $h/(mk)=0.0468/0.8656=0.0541$. The exact tip temperature
+is $\Theta_{\mathrm{tip}}=0.6886$ ($T_{\mathrm{tip}}=111.4\degC$), while the insulated tip
+gives $\Theta_{\mathrm{tip}}=1/\cosh(0.8656)=0.7150$ ($T_{\mathrm{tip}}=114.7\degC$). The
+insulated tip overpredicts the tip excess temperature by about 3.8\%.
+
+\paragraph*{Problem 4.20.}
+With $M=\sqrt{hPkA}\,(T_0-T_\infty)$, an insulated tip gives
+$\Qdot_{\mathrm{ins}}=M\tanh(mL)$, and a convecting tip gives
+\begin{equation*}
+\Qdot_{\mathrm{conv}}
+=M\,\frac{\sinh(mL)+\frac{h}{mk}\cosh(mL)}{\cosh(mL)+\frac{h}{mk}\sinh(mL)}.
+\end{equation*}
+Numerically,
+\begin{align*}
+\frac{\Qdot_{\mathrm{ins}}}{M}&=\tanh(0.8656)=0.6992,\\
+\frac{\Qdot_{\mathrm{conv}}}{M}
+&=\frac{\sinh(0.8656)+0.0541\cosh(0.8656)}{\cosh(0.8656)+0.0541\sinh(0.8656)}=0.7258,
+\end{align*}
+so the insulated-tip approximation underpredicts the exact heat flow by
+\begin{equation*}
+\frac{\Qdot_{\mathrm{conv}}-\Qdot_{\mathrm{ins}}}{\Qdot_{\mathrm{conv}}}
+=\frac{0.7258-0.6992}{0.7258}=0.0367,
+\end{equation*}
+or \textbf{3.67\%}, with the approximate heat flow slightly lower than the exact value.
+
+\paragraph*{Course rod.}
+The same comparison with $h_L=h=10~\WmmK$, $k=167~\WmK$, and the inputs of 3.3 gives
+$mL=1.168$, $\mathrm{Bi_{tip}}=hL/k=0.0161$, and $h/(mk)=0.0138$, four times smaller than
+in Example 4.8 (Table~\ref{tab:tip}). The insulated-tip boundary condition therefore
+changes the predicted course-rod profile by about 1\% at most, at the tip itself.
+
+\begin{table}[b]
+\caption{\label{tab:tip}Insulated versus convecting tip for the course rod
+($h_L=h=10~\WmmK$, $k=167~\WmK$, $L=26.90$~cm).}
+\begin{ruledtabular}
+\begin{tabular}{lrrr}
+Quantity & Insulated & Convecting & Difference \\
+\hline
+$\Theta_{\mathrm{tip}}$ & 0.5671 & 0.5607 & insulated 1.1\% high \\
+$\Qdot_0/M$ & 0.8236 & 0.8280 & insulated 0.53\% low \\
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+\subsection*{3.3 Inputs}
+
+The inputs are listed in Table~\ref{tab:inputs}.
+
+\begin{table*}[t]
+\caption{\label{tab:inputs}Inputs for the provisional predictions of Parts 3 and 4.}
+\begin{ruledtabular}
+\begin{tabular}{lp{0.33\textwidth}p{0.4\textwidth}}
+Input & Value & Source \\
+\hline
+Rod diameter $d$ & $12.70\pm0.02$ mm & measured with digital calipers (0.01 mm resolution) \\
+Overall rod length & $28.66\pm0.05$ cm & measured with a ruler (1 mm divisions) \\
+Hole diameter & 2.50--2.55 mm (mean 2.525 mm) & measured with calipers \\
+First-hole offset $s$ & $16.38~\mathrm{mm}+\tfrac12(2.525~\mathrm{mm})=17.64$ mm & calipers, from the TEC end of the rod to the near edge of the first hole, plus half the hole diameter to reach its center \\
+Analyzed length $L$ & $28.66~\mathrm{cm}-1.764~\mathrm{cm}=26.90\pm0.05$ cm & first-hole center to the tip \\
+Hole positions $x$ & 0, 1.2, 2.4, 3.7, 5.0, 7.6, 10.2, 15.3, 20.4 cm & measured from the first hole \\
+Planned sensors & T1--T5 at $x=0$, 5.0, 10.2, 15.3, 20.4 cm & chosen below \\
+Position uncertainty $\delta x$ & $\pm1.3$ mm & half the hole diameter: a sensor can sit anywhere in its hole \\
+Side coefficient $h$ & $10~\WmmK$ & Part III planning value for still room air~\cite{handout}; not a measurement \\
+Conductivity $k$ & 167 W/(m K); range 166--172 W/(m K) & 6061-T6, Lienhard Table A.1: 20\degC\ value; range from the 0\degC\ and 100\degC\ values \\
+Error criterion & $\epsilon_T<5\%$ at every sensor used & Part III handout's suggested starting criterion \\
+\end{tabular}
+\end{ruledtabular}
+\end{table*}
+
+\paragraph*{Planned sensor positions.}
+T1--T5 go in the holes at $x=0$, 5.0, 10.2, 15.3, and 20.4 cm. The reasons, using the
+predictions of 3.4 for $L=26.90$ cm and $h=10~\WmmK$:
+\begin{enumerate}
+\item T1 must be at $x=0$: the first hole is the analysis base defined in the handout.
+\item The farthest hole, 20.4 cm, is essential. The decay length $1/m\approx23$ cm is
+longer than the measured region, and even there the predicted $\Theta$ is only about 0.59,
+so the whole available range is needed to measure a large enough temperature decay.
+\item The points are spread evenly on a plot of $\ln\theta$ against $x$, as the handout
+asks, rather than clustered at one end: the spacings are all about 5 cm, and the
+predicted $\ln\Theta$ values are 0, $-0.17$, $-0.33$, $-0.45$, and $-0.53$.
+\item The set tests the difference between the finite and semi-infinite models: 5.0 cm is
+the last hole that meets the 5\% criterion ($\epsilon_T=4.6\%$), while at 10.2, 15.3, and
+20.4 cm $\epsilon_T$ is 11\%, 20\%, and 30\%, so the two fits should differ visibly in
+their residuals.
+\item The holes at 1.2 and 2.4 cm are not used: their 1.2 cm spacing is only about ten
+times the $\pm1.3$ mm position uncertainty, and neighboring points would differ little in
+temperature, adding little information.
+\item The farthest sensor still has a large signal: with the base about 25 K above room
+temperature, the predicted excess temperature at 20.4 cm is about 15 K, far above the
+noise.
+\end{enumerate}
+
+\subsection*{3.4 $m$, $mL$, and $\epsilon_T(x)$ at each planned sensor}
+
+For the circular rod, $P/A=4/d$, so
+\begin{align*}
+m=\sqrt{\frac{4h}{kd}}
+&=\sqrt{\frac{4(10~\WmmK)}{(167~\WmK)(0.01270~\mathrm{m})}}\\
+&=4.34~\mathrm{m^{-1}}.
+\end{align*}
+This gives $m=4.343~\mathrm{m^{-1}}$, $1/m=23.0$ cm, $mL=1.168$, and
+$\mathrm{Bi}_\parallel=(mL)^2=1.364$. Over $k=166$--172 W/(m K), $m=4.279$--4.356
+$\mathrm{m^{-1}}$ and $mL=1.151$--1.172; this range changes the results below by much
+less than their rounding.
+
+\paragraph*{Error formula.}
+Dividing the insulated-tip solution by the semi-infinite one,
+\begin{equation*}
+\frac{\Theta_{\mathrm{finite}}}{\Theta_\infty}
+=\frac{\cosh[m(L-x)]}{\cosh(mL)\,e^{-mx}}
+=\frac{1+e^{-2m(L-x)}}{1+e^{-2mL}}\ \ge\ 1,
+\end{equation*}
+so the insulated tip keeps the rod warmer than the semi-infinite model predicts, and the
+difference is largest near the tip. The relative error of the semi-infinite model is
+therefore
+\begin{equation*}
+\epsilon_T(x)
+=\frac{\Theta_{\mathrm{finite}}-\Theta_\infty}{\Theta_{\mathrm{finite}}}
+=1-\frac{1+e^{-2mL}}{1+e^{-2m(L-x)}},
+\end{equation*}
+which increases monotonically from 0 at the base. Setting $\epsilon_T=5\%$ gives the
+farthest position at which the criterion holds, $x^{\ast}=5.4$ cm. Table~\ref{tab:holes}
+gives $\epsilon_T$ at every hole and Table~\ref{tab:sensors} at the planned sensors.
+Because $h$ is only a planning value, Table~\ref{tab:hsens} varies it at $k=167$ W/(m K).
+Values are from \path{python/analysis/a4_part3_finite_length.py}.
+
+\begin{table*}[t]
+\caption{\label{tab:holes}Finite insulated-tip and semi-infinite profiles at every hole
+for $h=10~\WmmK$, $k=167~\WmK$, $L=26.90$ cm.}
+\begin{ruledtabular}
+\begin{tabular}{rrrrrrc}
+Hole $x$ (cm) & $L-x$ (cm) & $\Theta_{\mathrm{finite}}$ & $\Theta_\infty$ & $\epsilon_T$ & $\epsilon_T$ for $x\pm\delta x$ & $\epsilon_T<5\%$? \\
+\hline
+0.0 & 26.90 & 1.0000 & 1.0000 & 0.00\% & --- & yes \\
+1.2 & 25.70 & 0.9584 & 0.9492 & 0.96\% & 0.85--1.07\% & yes \\
+2.4 & 24.50 & 0.9194 & 0.9010 & 2.00\% & 1.89--2.12\% & yes \\
+3.7 & 23.20 & 0.8800 & 0.8516 & 3.23\% & 3.11--3.36\% & yes \\
+5.0 & 21.90 & 0.8434 & 0.8048 & 4.58\% & 4.44--4.71\% & yes \\
+7.6 & 19.30 & 0.7782 & 0.7189 & 7.62\% & 7.46--7.78\% & no \\
+10.2 & 16.70 & 0.7228 & 0.6421 & 11.16\% & 10.98--11.35\% & no \\
+15.3 & 11.60 & 0.6406 & 0.5146 & 19.67\% & 19.44--19.91\% & no \\
+20.4 & 6.50 & 0.5898 & 0.4123 & 30.09\% & 29.82--30.37\% & no \\
+\end{tabular}
+\end{ruledtabular}
+\end{table*}
+
+\begin{table}[t]
+\caption{\label{tab:sensors}Planned sensors, with an illustrative base excess temperature
+$\theta_0=25$ K.}
+\begin{ruledtabular}
+\begin{tabular}{lrrrrr}
+Sensor & $x$ (cm) & $\Theta_{\mathrm{finite}}$ & $\ln\Theta_{\mathrm{finite}}$ & $\theta$ (K) & $\epsilon_T$ \\
+\hline
+T1 & 0.0 & 1.0000 & 0.000 & 25.0 & 0.00\% \\
+T2 & 5.0 & 0.8434 & $-0.170$ & 21.1 & 4.58\% \\
+T3 & 10.2 & 0.7228 & $-0.325$ & 18.1 & 11.16\% \\
+T4 & 15.3 & 0.6406 & $-0.445$ & 16.0 & 19.67\% \\
+T5 & 20.4 & 0.5898 & $-0.528$ & 14.7 & 30.09\% \\
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+\begin{table}[t]
+\caption{\label{tab:hsens}Sensitivity to the planning value of $h$ at $k=167~\WmK$.}
+\begin{ruledtabular}
+\begin{tabular}{rrrr}
+$h$ ($\WmmK$) & $1/m$ (cm) & $mL$ & $x^{\ast}$ (cm) \\
+\hline
+5 & 32.6 & 0.826 & 4.6 \\
+10 & 23.0 & 1.168 & 5.4 \\
+15 & 18.8 & 1.431 & 6.4 \\
+20 & 16.3 & 1.652 & 7.4 \\
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+\subsection*{3.5 Prediction: length}
+
+With the criterion $\epsilon_T<5\%$ at every sensor used, the semi-infinite model is
+adequate at T1 ($x=0$) and T2 (5.0 cm, $\epsilon_T=4.6\%$, still below 5\% at the edge of
+the $\pm1.3$ mm position uncertainty), but not at T3, T4, and T5 (10.2, 15.3, and
+20.4 cm), where $\epsilon_T$ is 11\%, 20\%, and 30\%. Among all the holes, only those at
+$x\le5.0$ cm meet the criterion ($x^{\ast}=5.4$ cm). The whole rod is far from the
+``infinitely long'' regime: $mL=1.17$, compared with Lienhard's guideline $mL\gtrsim5$.
+
+Three of the five planned sensors lie beyond $x^{\ast}$, so I expect the course rod
+\textbf{not} to be adequately semi-infinite over the measured region. The stationary
+profile should be analyzed with the finite insulated-tip model; the semi-infinite fit is a
+comparison that should show a systematic residual at the far sensors. The tip boundary
+condition itself matters much less: replacing the insulated tip by a convecting one
+changes the prediction by about 1\% (3.2).
+
+This prediction depends on the planned sensor positions and $L=26.90$ cm in 3.3,
+$h=10~\WmmK$, $k=166$--172 W/(m K), and the 5\% criterion. It is not sensitive to $k$.
+For any $h$ from 5 to 20 $\WmmK$, $x^{\ast}$ stays between 4.6 and 7.4 cm, so T3, T4, and
+T5 fail in every case. Only T2 at 5.0 cm is marginal: it passes for $h\ge10~\WmmK$ but
+fails if $h$ is as low as 5 $\WmmK$.
+
+%======================================================================
+\section*{Part 4. Provisional one-dimensional prediction}
+
+\subsection*{4.1 Transverse Biot number}
+
+\paragraph*{Definition and meaning.}
+The transverse (radial) Biot number is defined as (Lienhard Eq.~4.27)
+\begin{equation*}
+\Biperp=\frac{h(A/P)}{k},
+\end{equation*}
+where $A/P$, the cross-sectional area divided by the perimeter, is the characteristic
+length for conduction across the section. It represents the ratio of the internal radial
+conduction resistance to the external surface convection resistance:
+\begin{equation*}
+\Biperp\sim\frac{R_{\mathrm{radial\ conduction}}}{R_{\mathrm{surface\ convection}}}.
+\end{equation*}
+
+\paragraph*{Form for a cylindrical rod.}
+For a rod of diameter $d$,
+\begin{equation*}
+\frac{A}{P}=\frac{\pi d^2/4}{\pi d}=\frac{d}{4},
+\qquad\text{so}\qquad
+\boxed{\Biperp=\frac{hd}{4k}}.
+\end{equation*}
+
+\paragraph*{Numerical value and unit check.}
+Using $h=10~\WmmK$, $d=0.01270$ m, and $k=167~\WmK$,
+\begin{equation*}
+\Biperp=\frac{(10)(0.01270)}{4(167)}=1.90\times10^{-4}.
+\end{equation*}
+If $k$ is taken from Lienhard's range of 166--172 W/(m K), then
+$\Biperp=1.85\times10^{-4}$ to $1.91\times10^{-4}$. Units:
+\begin{equation*}
+\frac{[\WmmK][\mathrm{m}]}{[\WmK]}=1,
+\end{equation*}
+so $\Biperp$ is dimensionless.
+
+\paragraph*{Conversion to a temperature difference.}
+The temperature difference between the center of the cross section and its surface is
+approximately
+\begin{equation*}
+\Delta T_{\mathrm{center-surface}}\approx\Biperp\,\theta,
+\end{equation*}
+where $\theta$ is the temperature difference between the rod surface and the ambient air.
+With the illustrative $\theta\approx25$ K of 3.4,
+\begin{equation*}
+\Delta T\approx(2\times10^{-4})(25~\mathrm{K})\approx0.005~\mathrm{K},
+\end{equation*}
+about ten times smaller than the scatter of single thermistor readings (standard deviation
+0.03--0.05\degC\ in the stationary interval of the rod runs).
+
+\paragraph*{Inverse calculation: what $h$ would break the radial lumped assumption?}
+Setting $\Biperp=0.1$,
+\begin{equation*}
+h=\frac{0.4k}{d}=\frac{0.4(167)}{0.0127}\approx5300~\WmmK.
+\end{equation*}
+Lienhard Table 1.1 (p.~21) lists 4.2--29 $\WmmK$ for natural convection in air and
+45--80 $\WmmK$ for forced convection of air. The value 5300 $\WmmK$ is about 500 times the
+planning value and still about 65 times the largest forced-air value. Under the
+experimental conditions, the assumption of radial temperature uniformity is therefore
+very robust.
+
+\subsection*{4.2 Prediction: radius}
+
+\paragraph*{Criterion.}
+Lienhard (p.~24): the lumped-capacity solution is normally accurate within about 3\% if
+$\mathrm{Bi}<0.1$.
+
+\paragraph*{Conclusion.}
+For this rod, $\Biperp\approx2\times10^{-4}\ll0.1$. Therefore each cross section can be
+represented by a single temperature $T(x)$. This conclusion depends on $h=10~\WmmK$,
+$k=166$--172 W/(m K), and $d=12.70$ mm.
+
+\paragraph*{Distinction from 3.4 and 3.5.}
+$\Biperp$ answers the approximation question in the \textbf{radial} direction;
+$\mathrm{Bi}_\parallel=(mL)^2$ in 3.4 and the prediction in 3.5 answer it in the
+\textbf{length} direction. They are independent: for this rod $\Biperp$ is very small,
+but $(mL)^2=1.36$ is not. The temperature is uniform across each section, yet it still
+decays noticeably along the rod.
+
+\paragraph*{Status of this prediction.}
+This is a prediction made \emph{before} heating. After $m$ is fitted, the
+self-consistency check
+\begin{equation*}
+\Biperp=\left(\frac{md}{4}\right)^2
+\end{equation*}
+will confirm whether the experimentally extracted $m$ is consistent with a small
+$\Biperp$.
+
+\subsection*{4.3 Application: heat sink in still and forced air}
+
+\paragraph*{Larger $h$ in forced air.}
+Forced airflow continuously sweeps away the heated air near the surface, thinning the
+thermal boundary layer, and thus significantly increases the convective heat transfer
+coefficient $h$. Lienhard Table 1.1 gives 4.2--29 $\WmmK$ for natural convection in air
+and 45--80 $\WmmK$ for forced convection of air (illustrative values; the actual $h$
+depends on velocity and geometry).
+
+\paragraph*{Relation between the decay length $1/m$ and $h$.}
+From $m=\sqrt{hP/(kA)}$,
+\begin{equation*}
+\frac{1}{m}=\sqrt{\frac{kA}{hP}}=\sqrt{\frac{kd}{4h}}\propto h^{-1/2}.
+\end{equation*}
+With $k=167~\WmK$ and $d=0.01270$ m, $1/m=32.6$, 23.0, 18.8, and 16.3 cm for $h=5$, 10,
+15, and 20 $\WmmK$ (Table~\ref{tab:hsens}). When $h$ is quadrupled, $1/m$ is halved. The
+forced-air heat sink therefore has the shorter decay length.
+
+\paragraph*{Physical meaning.}
+A shorter decay length means that heat leaves through the sides before it can travel far
+along the fin, so the far end of the fin is closer to the ambient air temperature. The
+total heat dissipation,
+\begin{equation*}
+\Qdot_0=\sqrt{hPkA}\,\theta_0\tanh(mL),
+\end{equation*}
+still increases with $h$. $\Biperp\propto h$ also increases with $h$, but it remains
+$\ll1$ in air.
+
+%======================================================================
+\section*{Git checkpoint and AI use}
+
+This PDF is built from commit \texttt{\commit} of \repourl; the same text is in
+\path{docs/assessments/a4_finite_length_biot.md}, and the LaTeX source in
+\path{docs/assessments/a4_latex/A4_Yin.tex}.
+
+\begin{itemize}
+\item \textbf{Part 1:} The derivation, the reasonableness discussion, and the choice of
+references are my own. Claude Code (an AI coding assistant) wrote
+\path{python/analysis/a4_problem_1_3.py}, which computes Table~\ref{tab:p13} from the
+Lienhard Table A.1 and A.2 values, reviewed my drafts, and formatted the references.
+\item \textbf{Part 2:} The calculations are my own. Claude Code organized and formatted
+this part: it wrote a first draft for comparison, reviewed my version, and fixed its
+LaTeX formatting.
+\item \textbf{Part 3:} The Problem 4.12 derivation, the Example 4.8 and Problem 4.20
+calculations, and the choice of sensor holes with its reasons are my own. The course-rod
+numbers in 3.2--3.4 ($m$, $mL$, $\epsilon_T$ at each hole, $x^{\ast}$, the
+planned-sensor table, the tip comparison, and the $h$ sensitivity) were computed by
+\path{python/analysis/a4_part3_finite_length.py}, which Claude Code wrote from my
+measurements; I checked $m$, $mL$, and $\epsilon_T$ at 7.6 cm by hand. Claude Code also
+organized and formatted Part 3: it made the tables, translated my notes into English, and
+drafted the text of 3.4 and 3.5.
+\item \textbf{Part 4:} The text and calculations are my own. Claude Code checked the
+numbers and the Lienhard citations against the textbook, corrected the page of the 3\%
+statement (p.~24), the ``two orders of magnitude'' comparison, and the reading-noise value
+(now the measured scatter), and converted the math to GitHub format.
+\item \textbf{This PDF:} Claude Code converted the repository Markdown to this REVTeX
+document and drafted the abstract.
+\end{itemize}
+
+\begin{thebibliography}{6}
+\bibitem{Lienhard}
+J.~H. Lienhard~V and J.~H. Lienhard~IV, \emph{A Heat Transfer Textbook}, 6th ed.
+(Phlogiston Press, Cambridge, MA, 2024).
+
+\bibitem{handout}
+Phys 39, Brandeis University, Fall 2026, \emph{Module 7, Part III: Rod Instrument and
+Stationary Fin}, \url{https://sethfraden.github.io/Phys39F26-course/labs/lab-08/}.
+
+\bibitem{magnesia}
+Asbestos Safety and Eradication Agency (Australia), ``85\% Magnesia insulation,''
+\url{https://products.asbestossafety.gov.au/insulation/85-magnesia-insulation/}.
+
+\bibitem{sio2mp}
+WebElements, ``Silicon dioxide,''
+\url{https://www.webelements.com/compounds/silicon/silicon_dioxide.html}.
+
+\bibitem{sio2range}
+Wikipedia, ``Silicon dioxide'' (archived 13 November 2013),
+\url{https://eresources.nlb.gov.sg/webarchives/wayback/20131113210036/https://en.wikipedia.org/wiki/Silica}.
+\end{thebibliography}
+
+\end{document}

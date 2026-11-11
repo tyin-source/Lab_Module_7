@@ -1,0 +1,20 @@
+Raw data file: rod_20261111-101158.csv
+Created: 2026-11-11T10:11:58
+Serial port: /dev/cu.usbmodem1101 at 9600 baud
+Arduino sketch: arduino/module_07_rod_controller/module_07_rod_controller.ino
+Python GUI: python/module_07_rod_acquisition_gui.py
+Git commit: 1c05d7c +uncommitted changes
+Units: time_s in s (Arduino clock since its last reset); *_C in degrees C; pwm 0-255; heat_cool 1 = heat, 0 = cool; setpoint_C as sent by this GUI (nan when not under control); safety OK or SHUTDOWN.
+Temperatures are raw readings (no calibration corrections).
+Channel map (x from the first thermistor hole, +/- 1.3 mm):
+  tec_C: TEC, input A0, TEC base
+  rod1_C: T1, input A1, x = 0.0 cm
+  rod2_C: T2, input A2, x = 5.0 cm
+  rod3_C: T3, input A3, x = 10.2 cm
+  rod4_C: T4, input A4, x = 15.3 cm
+  rod5_C: T5, input A5, x = 20.4 cm
+Events (Arduino time, then wall-clock time):
+  [    ---   | 10:11:59] Arduino: SAFETY: software temperature limit on the TEC thermistor (C): 60.00
+  [    ---   | 10:11:59] Arduino: SAFETY: command timeout (s): 3.0
+  [   138.55 s | 10:14:18] control START  Tset = 45.00 C (low 20, high 45), Kp = 6 PWM/C, Ki = 0.04 PWM/(C s), u_max = 255, anti-windup on
+  [  2268.11 s | 10:49:48] control STOP (stopped by user); q = 1360.5 C s
